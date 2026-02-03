@@ -205,6 +205,9 @@ class Solitaire {
         document.addEventListener('mouseup', (e) => {
             if (!isDragging || !dragData) return;
 
+            // Find drop target BEFORE removing drag styling
+            const dropTarget = this.findDropTarget(e.clientX, e.clientY);
+
             isDragging = false;
 
             // Clear transform styles
@@ -218,9 +221,6 @@ class Solitaire {
                 const pileElement = document.getElementById(`${highlightedPile.type === 'foundations' ? 'foundation-' + highlightedPile.index : highlightedPile.type === 'tableau' ? 'tableau-' + highlightedPile.index : highlightedPile.type}`);
                 if (pileElement) pileElement.classList.remove('highlight');
             }
-
-            // Find drop target
-            const dropTarget = this.findDropTarget(e.clientX, e.clientY);
 
             if (dropTarget) {
                 this.tryMoveCards(dragData, dropTarget);
