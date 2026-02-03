@@ -144,6 +144,7 @@ class Solitaire {
         let isDragging = false;
         let dragData = null;
         let startX, startY;
+        let highlightedPile = null;
 
         document.addEventListener('mousedown', (e) => {
             const card = e.target.closest('.card');
@@ -194,6 +195,11 @@ class Solitaire {
                     cardElement.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.05)`;
                 }
             });
+
+            // Highlight valid drop target
+            const dropTarget = this.findDropTarget(e.clientX, e.clientY);
+            this.highlightDropTarget(dropTarget, dragData, highlightedPile);
+            highlightedPile = dropTarget;
         });
 
         document.addEventListener('mouseup', (e) => {
@@ -207,6 +213,12 @@ class Solitaire {
                 card.style.transform = '';
             });
 
+            // Remove highlight
+            if (highlightedPile) {
+                const pileElement = document.getElementById(`${highlightedPile.type === 'foundations' ? 'foundation-' + highlightedPile.index : highlightedPile.type === 'tableau' ? 'tableau-' + highlightedPile.index : highlightedPile.type}`);
+                if (pileElement) pileElement.classList.remove('highlight');
+            }
+
             // Find drop target
             const dropTarget = this.findDropTarget(e.clientX, e.clientY);
 
@@ -215,18 +227,41 @@ class Solitaire {
             }
 
             dragData = null;
+            highlightedPile = null;
         });
     }
 
+    highlightDropTarget(dropTarget, dragData, oldHighlightedPile) {
+        // Remove old highlight
+        if (oldHighlightedPile) {
+            const oldElement = document.getElementById(`${oldHighlightedPile.type === 'foundations' ? 'foundation-' + oldHighlightedPile.index : oldHighlightedPile.type === 'tableau' ? 'tableau-' + oldHighlightedPile.index : oldHighlightedPile.type}`);
+            if (oldElement) oldElement.classList.remove('highlight');
+        }
+
+        // Add new highlight if valid
+        if (dropTarget && this.isValidMove(dragData.cards, dropTarget)) {
+            const element = document.getElementById(`${dropTarget.type === 'foundations' ? 'foundation-' + dropTarget.index : dropTarget.type === 'tableau' ? 'tableau-' + dropTarget.index : dropTarget.type}`);
+            if (element) element.classList.add('highlight');
+        }
+    }
+
     findDropTarget(x, y) {
-        // Hide dragging cards temporarily to find element below
+        // Disable pointer events on dragging cards temporarily to find element below
         const draggingCards = document.querySelectorAll('.card.dragging');
-        draggingCards.forEach(card => card.style.visibility = 'hidden');
+        draggingCards.forEach(card => card.style.pointerEvents = 'none');
 
         const element = document.elementFromPoint(x, y);
-        const pile = element?.closest('.pile');
 
-        draggingCards.forEach(card => card.style.visibility = 'visible');
+        // Find the pile element
+        let pile = element?.closest('.pile');
+
+        // If not directly over a pile, check if we're over a card and get its parent pile
+        if (!pile && element?.classList.contains('card')) {
+            pile = element.closest('.pile');
+        }
+
+        // Restore pointer events
+        draggingCards.forEach(card => card.style.pointerEvents = '');
 
         if (!pile) return null;
 
