@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solitaire - Klondike</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <header>
+            <h1>♠ Solitaire ♥</h1>
+            <div class="controls">
+                <button id="new-game-btn" class="btn">New Game</button>
+                <button id="auto-complete-btn" class="btn btn-secondary" disabled>Auto Complete</button>
+            </div>
+        </header>
+
+        <div class="score-board">
+            <div class="score-item">
+                <span>Moves:</span>
+                <span id="moves">0</span>
+            </div>
+            <div class="score-item">
+                <span>Time:</span>
+                <span id="timer">00:00</span>
+            </div>
+        </div>
+
+        <div class="game-board">
+            <!-- Top row: Stock, Waste, and Foundations -->
+            <div class="top-row">
+                <div class="stock-waste-section">
+                    <div id="stock" class="pile stock" data-type="stock"></div>
+                    <div id="waste" class="pile waste" data-type="waste"></div>
+                </div>
+                <div class="foundation-section">
+                    <div id="foundation-0" class="pile foundation" data-type="foundation" data-suit="hearts">♥</div>
+                    <div id="foundation-1" class="pile foundation" data-type="foundation" data-suit="diamonds">♦</div>
+                    <div id="foundation-2" class="pile foundation" data-type="foundation" data-suit="clubs">♣</div>
+                    <div id="foundation-3" class="pile foundation" data-type="foundation" data-suit="spades">♠</div>
+                </div>
+            </div>
+
+            <!-- Tableau -->
+            <div class="tableau-section">
+                <div id="tableau-0" class="pile tableau" data-type="tableau" data-index="0"></div>
+                <div id="tableau-1" class="pile tableau" data-type="tableau" data-index="1"></div>
+                <div id="tableau-2" class="pile tableau" data-type="tableau" data-index="2"></div>
+                <div id="tableau-3" class="pile tableau" data-type="tableau" data-index="3"></div>
+                <div id="tableau-4" class="pile tableau" data-type="tableau" data-index="4"></div>
+                <div id="tableau-5" class="pile tableau" data-type="tableau" data-index="5"></div>
+                <div id="tableau-6" class="pile tableau" data-type="tableau" data-index="6"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Win Modal -->
+    <div id="win-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>🎉 You Win! 🎉</h2>
+            <p>Congratulations! You've completed the game!</p>
+            <div class="win-stats">
+                <p>Moves: <span id="win-moves"></span></p>
+                <p>Time: <span id="win-time"></span></p>
+            </div>
+            <button id="play-again-btn" class="btn">Play Again</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
